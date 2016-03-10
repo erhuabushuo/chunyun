@@ -3,16 +3,14 @@ import os
 from .command import Command
 
 CONFIG_TPL = """
-[development]
-engine = postgres
+[dev]
 host = localhost
 port = 5432
 database = test
 user = postgres
 password =
 
-[production]
-engine = postgres
+[prod]
 host = localhost
 port = 5432
 database = test

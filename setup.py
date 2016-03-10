@@ -14,5 +14,7 @@ setup(
         'console_scripts': [
             'chunyun = chunyun.command_line:main'
         ]
-    }
+    },
+    test_suite='nose.collector',
+    tests_require=['nose'],
 )

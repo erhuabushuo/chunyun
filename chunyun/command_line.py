@@ -3,6 +3,8 @@ import sys
 
 from .create_command import CreateCommand
 from .init_command import InitCommand
+from .make_command import MakeCommand
+from .sync_command import SyncCommand
 
 
 def get_command(command):
@@ -10,14 +12,15 @@ def get_command(command):
     Let's be dynamic
     :return: command
     """
-    commands = {'create': CreateCommand, 'init': InitCommand}
+    commands = {'create': CreateCommand, 'init': InitCommand, 'make': MakeCommand, 'sync': SyncCommand}
     return commands.get(command, None)
 
 
-def main():
+def parse_args(args):
     """
-    命令工具户主入口
-    :return: None
+    解析命令行参数
+    :param args: command line arguments
+    :return: arguments
     """
     parser = argparse.ArgumentParser(description="A simple database migration tool")
 
@@ -29,25 +32,41 @@ def main():
 
     # init
     init_parser = subparsers.add_parser("init", help="Init your project")
+    init_parser.add_argument("-e", "--env", action="store", default="dev",
+                               choices=['dev', 'prod'],
+                               help="the enviroment you want to control. (default: %(default)s)")
 
-    arguments = parser.parse_args()
+    # make
+    make_parser = subparsers.add_parser("make", help="Make a new migration")
+    make_parser.add_argument("description", action="store",
+                             help="provide a description. (for example: create_user_table)")
+
+    # sync
+    sync_parser = subparsers.add_parser("sync", help="Synchronize migrations")
+
+    arguments = parser.parse_args(args)
+
     if arguments.command is None:
         print(parser.print_help())
-        return
+        sys.exit(-1)
+
+    return arguments
+
+
+def main():
+    """
+    命令工具户主入口
+    :return: None
+    """
+    arguments = parse_args(sys.argv[1:])
 
     Command = get_command(arguments.command)
     if Command is None:
         print("An error occurred", file=sys.stderr)
         sys.exit(-1)
 
-    command = Command(arguments)
-    command.run()
-
-
-
-
-
-
-
-
-
+    try:
+        command = Command(arguments)
+        command.run()
+    except Exception as e:
+        print("Error: ", e)
