@@ -79,3 +79,4 @@ class SyncCommand(Command):
                 sql, _ = sql.split("-- @down")
                 self.sync_migration(parser, sql)
                 self.insert_migration_record(parser, file)
+                print("{}同步到数据库".format(file))
