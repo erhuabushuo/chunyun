@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="chunyun",
-    version="0.2",
+    version="0.3",
     description="A simple database migration tool",
     url="http://github.com/erhuabushuo/chunyun",
     author="疯人院主任",
