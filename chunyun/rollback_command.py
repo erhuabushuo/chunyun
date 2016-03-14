@@ -6,10 +6,10 @@ import subprocess
 from .command import Command
 
 GET_LATEST_MIGRATION = "'SELECT name FROM chunyun_migrations ORDER BY ID DESC LIMIT 1'"
-NEW_MIGRATION = "'INSERT INTO chunyun_migrations(name) VALUES($${0}$$)'"
+REMOVE_LATEST_MIGRATION = "'DELETE FROM chunyun_migrations WHERE name = $${0}$$'"
 
 
-class SyncCommand(Command):
+class RollbackCommand(Command):
 
     def get_latest_migration(self, option):
         os.environ['PGPASSWORD'] = option.get(self.args.env, "password")
@@ -24,18 +24,17 @@ class SyncCommand(Command):
         handle.close()
         return output
 
-    def insert_migration_record(self, option, name):
+    def remove_migration_record(self, option, name):
         os.environ['PGPASSWORD'] = option.get(self.args.env, "password")
         cmd = "psql -h {host} -p {port}  -U {user} {name} -c {sql}".format(
                             host=option.get(self.args.env, 'host'),
                             port=option.get(self.args.env, 'port'),
                             user=option.get(self.args.env, 'user'),
                             name=option.get(self.args.env, 'database'),
-                            sql=NEW_MIGRATION.format(name))
+                            sql=REMOVE_LATEST_MIGRATION.format(name))
         handle = os.popen(cmd)
         output = handle.read()
         handle.close()
-        #print(output)
 
     def sync_migration(self, option, sql):
         handle = NamedTemporaryFile(delete=False)
@@ -54,28 +53,18 @@ class SyncCommand(Command):
         cmd_handle.close()
         os.unlink(handle.name)
 
-    def get_migration_files(self):
-        files = os.listdir('migrations')
-        files.sort()
-        return files
-
     def run(self):
         parser = ConfigParser()
         parser.read("config.ini")
 
         # 获取migrations表里最新同步文件
         latest_migration = self.get_latest_migration(parser)
-        files = self.get_migration_files()
 
-        idx = -1
-        try:
-            idx = files.index(latest_migration)
-        except:
-            pass
-
-        for file in files[idx+1:]:
-            with open(os.path.join("migrations", file)) as handle:
+        if os.path.exists(os.path.join("migrations", latest_migration)):
+            with open(os.path.join("migrations", latest_migration)) as handle:
                 sql = handle.read()
-                sql, _ = sql.split("-- @down")
+                _, sql = sql.split("-- @down")
                 self.sync_migration(parser, sql)
-                self.insert_migration_record(parser, file)
+                self.remove_migration_record(parser, latest_migration)
+        else:
+            raise Exception("{}文件不存在！".format(latest_migration))

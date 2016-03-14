@@ -5,6 +5,7 @@ from .create_command import CreateCommand
 from .init_command import InitCommand
 from .make_command import MakeCommand
 from .sync_command import SyncCommand
+from .rollback_command import RollbackCommand
 
 
 def get_command(command):
@@ -12,7 +13,8 @@ def get_command(command):
     Let's be dynamic
     :return: command
     """
-    commands = {'create': CreateCommand, 'init': InitCommand, 'make': MakeCommand, 'sync': SyncCommand}
+    commands = {'create': CreateCommand, 'init': InitCommand, 'make': MakeCommand, 'sync': SyncCommand,
+                'rollback': RollbackCommand}
     return commands.get(command, None)
 
 
@@ -43,6 +45,15 @@ def parse_args(args):
 
     # sync
     sync_parser = subparsers.add_parser("sync", help="Synchronize migrations")
+    sync_parser.add_argument("-e", "--env", action="store", default="dev",
+                               choices=['dev', 'prod'],
+                               help="the enviroment you want to control. (default: %(default)s)")
+
+    # rollback
+    rollback_parser = subparsers.add_parser("rollback", help="Rollback migration")
+    rollback_parser.add_argument("-e", "--env", action="store", default="dev",
+                               choices=['dev', 'prod'],
+                               help="the enviroment you want to control. (default: %(default)s)")
 
     arguments = parser.parse_args(args)
 
@@ -69,4 +80,4 @@ def main():
         command = Command(arguments)
         command.run()
     except Exception as e:
-        print("Error: ", e)
+        print("Error: ", sys.exc_info()[1])

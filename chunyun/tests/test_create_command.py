@@ -1,17 +1,11 @@
-from unittest import TestCase
 import os
 
+from .test_base import TestBase
 from chunyun.command_line import parse_args
-from chunyun.create_command import CreateCommand, CONFIG_TPL
+from chunyun.create_command import CONFIG_TPL
 
 
-class TestCreateCommand(TestCase):
-
-    def setUp(self):
-        # 通过命令行执行：chunyun create .
-        arguments = parse_args(['create', '.'])
-        command = CreateCommand(arguments)
-        command.run()
+class TestCreateCommand(TestBase):
 
     def test_will_create_config_ini_file(self):
         # 此时当前应该产生了config.ini文件
@@ -29,8 +23,4 @@ class TestCreateCommand(TestCase):
         with self.assertRaises(Exception):
             self.setUp()
 
-
-    def tearDown(self):
-        os.remove("config.ini")
-        os.rmdir("migrations")
 

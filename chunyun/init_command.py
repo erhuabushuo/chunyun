@@ -58,7 +58,6 @@ class InitCommand(Command):
         handle.close()
         print(output)
 
-
     def run(self):
         # 同步数据库
         if not os.path.exists("config.ini"):
