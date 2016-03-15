@@ -1,6 +1,7 @@
 import os
 
 from .command import Command
+import random
 
 
 SQL_TPL = """
@@ -28,7 +29,7 @@ class MakeCommand(Command):
             number, _ = file.split("_", 1)
             number = int(number)
             number += 1
-            filename = "{:03d}_{:s}.sql".format(number, description)
+            filename = "{:03d}_{:s}_{:d}.sql".format(number, description, random.randint(100000, 999999))
 
         with open(os.path.join('migrations', filename), "w") as handle:
             handle.write(SQL_TPL)
