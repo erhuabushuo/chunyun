@@ -1,7 +1,7 @@
 import os
+import random
 
 from .command import Command
-import random
 
 
 SQL_TPL = """
