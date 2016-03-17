@@ -28,12 +28,12 @@ class CreateCommand(Command):
         if os.path.exists(config_path):
             raise Exception("已经在目录下初始化过！")
 
-        with open(config_path, "w") as handle:
-            handle.write(CONFIG_TPL)
-
         # 创建migrations目录
         migrations_path = os.path.join(self.args.dirname, "migrations")
         print("Creating directory {}".format(migrations_path))
         os.makedirs(migrations_path)
+
+        with open(config_path, "w") as handle:
+            handle.write(CONFIG_TPL)
 
         print("成功创建项目，请配置config.ini文件")
