@@ -74,6 +74,9 @@ class InitCommand(Command):
         parser = ConfigParser()
         parser.read("config.ini")
         dumps = self.dump(parser)
+        # 插入migration表
+        self.create_migration_table(parser)
+        # 导出当前数据库结构
         content = SQL_TPL.format(up=dumps)
 
         if not os.path.exists("migrations"):
@@ -82,7 +85,6 @@ class InitCommand(Command):
         with open("migrations/001_init.sql", "w") as handle:
             handle.write(content)
 
-        self.create_migration_table(parser)
         self.insert_init_record(parser)
 
 
