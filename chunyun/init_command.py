@@ -15,8 +15,8 @@ SQL_TPL = """
 ---------------------------------------------------------------------
 
 """
-INIT_MIGRATION_TABLE = "'CREATE TABLE IF NOT EXISTS chunyun_migrations(id serial primary key, name varchar not null, created_at TIMESTAMPTZ default CURRENT_TIMESTAMP(0));'"
-INIT_RECORD = "'INSERT INTO chunyun_migrations(name) VALUES($$001_init.sql$$)'";
+INIT_MIGRATION_TABLE = '"CREATE TABLE IF NOT EXISTS chunyun_migrations(id serial primary key, name varchar not null, created_at TIMESTAMPTZ default CURRENT_TIMESTAMP(0));"'
+INIT_RECORD = '"INSERT INTO chunyun_migrations(name) VALUES($$001_init.sql$$)"';
 
 
 class InitCommand(Command):
@@ -34,7 +34,7 @@ class InitCommand(Command):
 
     def create_migration_table(self, option):
         os.environ['PGPASSWORD'] = option.get(self.args.env, "password")
-        cmd = "psql -h {host} -p {port}  -U {user} {name} -c {sql}".format(
+        cmd = "psql -h {host} -p {port}  -U {user} -c {sql} {name}".format(
                             host=option.get(self.args.env, 'host'),
                             port=option.get(self.args.env, 'port'),
                             user=option.get(self.args.env, 'user'),
@@ -47,7 +47,7 @@ class InitCommand(Command):
 
     def insert_init_record(self, option):
         os.environ['PGPASSWORD'] = option.get(self.args.env, "password")
-        cmd = "psql -h {host} -p {port}  -U {user} {name} -c {sql}".format(
+        cmd = "psql -h {host} -p {port}  -U {user} -c {sql} {name}".format(
                             host=option.get(self.args.env, 'host'),
                             port=option.get(self.args.env, 'port'),
                             user=option.get(self.args.env, 'user'),
@@ -76,16 +76,14 @@ class InitCommand(Command):
         dumps = self.dump(parser)
         # 插入migration表
         self.create_migration_table(parser)
+        print("创建migrations表")
         # 导出当前数据库结构
-        content = SQL_TPL.format(up=dumps)
 
         if not os.path.exists("migrations"):
             os.makedirs("migrations")
 
+        content = SQL_TPL.format(up=dumps)
         with open("migrations/001_init.sql", "w") as handle:
             handle.write(content)
 
         self.insert_init_record(parser)
-
-
-

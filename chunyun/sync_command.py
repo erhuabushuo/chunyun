@@ -5,15 +5,15 @@ import subprocess
 
 from .command import Command
 
-GET_LATEST_MIGRATION = "'SELECT name FROM chunyun_migrations ORDER BY ID DESC LIMIT 1'"
-NEW_MIGRATION = "'INSERT INTO chunyun_migrations(name) VALUES($${0}$$)'"
+GET_LATEST_MIGRATION = '"SELECT name FROM chunyun_migrations ORDER BY ID DESC LIMIT 1"'
+NEW_MIGRATION = '"INSERT INTO chunyun_migrations(name) VALUES($${0}$$)"'
 
 
 class SyncCommand(Command):
 
     def get_latest_migration(self, option):
         os.environ['PGPASSWORD'] = option.get(self.args.env, "password")
-        cmd = "psql -h {host} -p {port}  -U {user} {name} -t -c {sql}".format(
+        cmd = "psql -h {host} -p {port}  -U {user} -t -c {sql} {name}".format(
                             host=option.get(self.args.env, 'host'),
                             port=option.get(self.args.env, 'port'),
                             user=option.get(self.args.env, 'user'),
@@ -26,7 +26,7 @@ class SyncCommand(Command):
 
     def insert_migration_record(self, option, name):
         os.environ['PGPASSWORD'] = option.get(self.args.env, "password")
-        cmd = "psql -h {host} -p {port}  -U {user} {name} -c {sql}".format(
+        cmd = "psql -h {host} -p {port}  -U {user} -c {sql} {name}".format(
                             host=option.get(self.args.env, 'host'),
                             port=option.get(self.args.env, 'port'),
                             user=option.get(self.args.env, 'user'),
@@ -43,7 +43,7 @@ class SyncCommand(Command):
         handle.write(sql.encode("utf-8"))
         handle.close()
         os.environ['PGPASSWORD'] = option.get(self.args.env, "password")
-        cmd = "psql -h {host} -p {port}  -U {user} {name} -f '{file}'".format(
+        cmd = 'psql -h {host} -p {port}  -U {user} -f "{file}" {name}'.format(
                             host=option.get(self.args.env, 'host'),
                             port=option.get(self.args.env, 'port'),
                             user=option.get(self.args.env, 'user'),

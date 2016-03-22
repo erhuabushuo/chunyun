@@ -5,15 +5,15 @@ import subprocess
 
 from .command import Command
 
-GET_LATEST_MIGRATION = "'SELECT name FROM chunyun_migrations ORDER BY ID DESC LIMIT 1'"
-REMOVE_LATEST_MIGRATION = "'DELETE FROM chunyun_migrations WHERE name = $${0}$$'"
+GET_LATEST_MIGRATION = '"SELECT name FROM chunyun_migrations ORDER BY ID DESC LIMIT 1"'
+REMOVE_LATEST_MIGRATION = '"DELETE FROM chunyun_migrations WHERE name = $${0}$$"'
 
 
 class RollbackCommand(Command):
 
     def get_latest_migration(self, option):
         os.environ['PGPASSWORD'] = option.get(self.args.env, "password")
-        cmd = "psql -h {host} -p {port}  -U {user} {name} -t -c {sql}".format(
+        cmd = "psql -h {host} -p {port}  -U {user} -t -c {sql} {name}".format(
                             host=option.get(self.args.env, 'host'),
                             port=option.get(self.args.env, 'port'),
                             user=option.get(self.args.env, 'user'),
@@ -26,7 +26,7 @@ class RollbackCommand(Command):
 
     def remove_migration_record(self, option, name):
         os.environ['PGPASSWORD'] = option.get(self.args.env, "password")
-        cmd = "psql -h {host} -p {port}  -U {user} {name} -c {sql}".format(
+        cmd = "psql -h {host} -p {port}  -U {user} -c {sql} {name}".format(
                             host=option.get(self.args.env, 'host'),
                             port=option.get(self.args.env, 'port'),
                             user=option.get(self.args.env, 'user'),
@@ -42,7 +42,7 @@ class RollbackCommand(Command):
         handle.write(sql.encode("utf-8"))
         handle.close()
         os.environ['PGPASSWORD'] = option.get(self.args.env, "password")
-        cmd = "psql -h {host} -p {port}  -U {user} {name} -f '{file}'".format(
+        cmd = 'psql -h {host} -p {port}  -U {user} -f "{file}" {name}'.format(
                             host=option.get(self.args.env, 'host'),
                             port=option.get(self.args.env, 'port'),
                             user=option.get(self.args.env, 'user'),
