@@ -66,5 +66,4 @@ Flyway, Liquibase, dbdeploy
 
 ## TODO
 
-* DB seed
 * multiple engines supporting
