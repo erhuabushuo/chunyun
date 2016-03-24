@@ -25,6 +25,7 @@ class SyncCommand(Command):
         handle = os.popen(cmd)
         output = handle.read().strip()
         handle.close()
+        output = int(output)
         return output
 
     def get_latest_migration(self, option):

@@ -16,12 +16,15 @@ class TestSyncCommand(TestBase):
         self.get_migration_files_mock = Mock(return_value=["001_init.sql", "002_create_user.sql", "003_whatever.sql"])
         self.sync_migration_mock = Mock()
         self.insert_migration_record_mock = Mock()
+        self.has_migration_table_mock = Mock(return_value=1)
         with patch.object(builtins, 'open', self.open_mock):
             command = SyncCommand(arguments)
             command.get_latest_migration = self.get_latest_migration_mock
             command.get_migration_files = self.get_migration_files_mock
             command.sync_migration = self.sync_migration_mock
             command.insert_migration_record = self.insert_migration_record_mock
+            command.has_migration_table = self.has_migration_table_mock
+
             command.run()
 
     def test_open_file_correct(self):
