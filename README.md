@@ -22,6 +22,10 @@
 
     chunyun init
 
+创建一个migration
+
+    chunyun make create_users_table
+
 同步
 
     chunyun sync

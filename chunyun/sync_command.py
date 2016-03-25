@@ -122,7 +122,7 @@ class SyncCommand(Command):
             pass
 
         for file in files[idx+1:]:
-            with open(os.path.join("migrations", file)) as handle:
+            with open(os.path.join("migrations", file), encoding="utf-8") as handle:
                 sql = handle.read()
                 sql, _ = sql.split("-- @down")
                 self.sync_migration(parser, sql)

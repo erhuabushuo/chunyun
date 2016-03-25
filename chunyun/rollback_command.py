@@ -61,7 +61,7 @@ class RollbackCommand(Command):
         latest_migration = self.get_latest_migration(parser)
 
         if os.path.exists(os.path.join("migrations", latest_migration)):
-            with open(os.path.join("migrations", latest_migration)) as handle:
+            with open(os.path.join("migrations", latest_migration), encoding="utf-8") as handle:
                 sql = handle.read()
                 _, sql = sql.split("-- @down")
                 self.sync_migration(parser, sql)
