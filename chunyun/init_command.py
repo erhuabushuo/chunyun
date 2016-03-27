@@ -61,29 +61,29 @@ class InitCommand(Command):
     def run(self):
         # 同步数据库
         if not os.path.exists("config.ini"):
-            raise Exception("你必须先创建项目")
+            raise Exception("you should create the project first.")
 
         pg_dump = shutil.which('pg_dump')
         if pg_dump is None:
-            raise Exception("确保系统具备pg_dump命令")
+            raise Exception("Make sure pg_dump command in your PATH enviroment.")
 
         psql = shutil.which('psql')
         if pg_dump is None:
-            raise Exception("确保系统具备psql命令")
+            raise Exception("Make sure pg_dump command in your psql enviroment.")
 
         parser = ConfigParser()
         parser.read("config.ini")
         dumps = self.dump(parser)
         # 插入migration表
         self.create_migration_table(parser)
-        print("创建migrations表")
+        print("creating chunyun_migrations table")
         # 导出当前数据库结构
 
         if not os.path.exists("migrations"):
             os.makedirs("migrations")
 
         content = SQL_TPL.format(up=dumps)
-        with open("migrations/001_init.sql", "w") as handle:
+        with open("migrations/001_init.sql", "w", encoding="utf-8") as handle:
             handle.write(content)
 
         self.insert_init_record(parser)

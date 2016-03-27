@@ -65,7 +65,8 @@ class RollbackCommand(Command):
                 sql = handle.read()
                 _, sql = sql.split("-- @down")
                 self.sync_migration(parser, sql)
-                self.remove_migration_record(parser, latest_migration)
-                print("回滚{}".format(latest_migration))
+                print("rollback {}".format(latest_migration))
         else:
-            raise Exception("{}文件不存在！".format(latest_migration))
+            print("{} does not exist".format(latest_migration))
+
+        self.remove_migration_record(parser, latest_migration)
