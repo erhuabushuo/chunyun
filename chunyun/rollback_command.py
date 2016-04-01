@@ -6,7 +6,7 @@ import subprocess
 from .command import Command
 
 GET_LATEST_MIGRATION = '"SELECT name FROM chunyun_migrations ORDER BY ID DESC LIMIT 1"'
-REMOVE_LATEST_MIGRATION = '"DELETE FROM chunyun_migrations WHERE name = $${0}$$"'
+REMOVE_LATEST_MIGRATION = '''"DELETE FROM chunyun_migrations WHERE name = '{0}'"'''
 
 
 class RollbackCommand(Command):

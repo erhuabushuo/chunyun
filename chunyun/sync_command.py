@@ -5,11 +5,11 @@ import subprocess
 
 from .command import Command
 
-HAS_MIGRATION_TABLE = '"SELECT count(*) FROM pg_tables WHERE tablename = $$chunyun_migrations$$"'
+HAS_MIGRATION_TABLE = '''"SELECT count(*) FROM pg_tables WHERE tablename = 'chunyun_migrations'"'''
 INIT_MIGRATION_TABLE = '"CREATE TABLE IF NOT EXISTS chunyun_migrations(id serial primary key, name varchar not null, created_at TIMESTAMPTZ default CURRENT_TIMESTAMP(0));"'
-INIT_RECORD = '"INSERT INTO chunyun_migrations(name) VALUES($$001_init.sql$$)"';
+INIT_RECORD = '''"INSERT INTO chunyun_migrations(name) VALUES('001_init.sql')"''';
 GET_LATEST_MIGRATION = '"SELECT name FROM chunyun_migrations ORDER BY ID DESC LIMIT 1"'
-NEW_MIGRATION = '"INSERT INTO chunyun_migrations(name) VALUES($${0}$$)"'
+NEW_MIGRATION = '''"INSERT INTO chunyun_migrations(name) VALUES('{0}')"'''
 
 
 class SyncCommand(Command):

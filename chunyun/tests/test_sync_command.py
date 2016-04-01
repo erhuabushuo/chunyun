@@ -28,7 +28,7 @@ class TestSyncCommand(TestBase):
             command.run()
 
     def test_open_file_correct(self):
-        self.open_mock.assert_called_with(os.path.join("migrations", "003_whatever.sql"))
+        self.open_mock.assert_called_with(os.path.join("migrations", "003_whatever.sql"), encoding='utf-8')
 
     def test_sync_sql(self):
         self.sync_migration_mock.assert_called_once_with(ANY, "create table users\n")

@@ -26,7 +26,7 @@ class TestRollBackCommand(TestBase):
                 command.run()
 
     def test_open_file_correct(self):
-        self.open_mock.assert_called_with(os.path.join("migrations", "002_create_user.sql"))
+        self.open_mock.assert_called_with(os.path.join("migrations", "002_create_user.sql"), encoding='utf-8')
 
     def test_sync_sql(self):
         self.sync_migration_mock.assert_called_once_with(ANY, "\ndrop table users;")

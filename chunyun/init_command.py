@@ -16,7 +16,7 @@ SQL_TPL = """
 
 """
 INIT_MIGRATION_TABLE = '"CREATE TABLE IF NOT EXISTS chunyun_migrations(id serial primary key, name varchar not null, created_at TIMESTAMPTZ default CURRENT_TIMESTAMP(0));"'
-INIT_RECORD = '"INSERT INTO chunyun_migrations(name) VALUES($$001_init.sql$$)"';
+INIT_RECORD = '''"INSERT INTO chunyun_migrations(name) VALUES('001_init.sql')"''';
 
 
 class InitCommand(Command):
