@@ -52,7 +52,6 @@ def parse_args(args):
     # rollback
     rollback_parser = subparsers.add_parser("rollback", help="Rollback migration")
     rollback_parser.add_argument("-e", "--env", action="store", default="dev",
-                               choices=['dev', 'prod'],
                                help="the enviroment you want to control. (default: %(default)s)")
 
     arguments = parser.parse_args(args)
